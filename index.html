@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Parent Page with Flexible Iframe</title>
+    <style>
+        body { font-family: sans-serif; }
+        #myIframe {
+            width: 100%; /* Make the iframe take full width */
+            border: 1px solid #ccc;
+            overflow: hidden; /* Hide scrollbars, as height will adjust */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Welcome to the Parent Page!</h1>
+    <p>Below is an iframe that should automatically adjust its height to fit its content.</p>
+
+    <iframe id="myIframe" src="https://your-child-github-page-url.github.io" frameborder="0" scrolling="no"></iframe>
+
+    <div style="margin-top: 50px; padding: 20px; background-color: #eee;">
+        <p>This content is below the iframe, and it should shift down as the iframe resizes.</p>
+    </div>
+
+    <script>
+        const iframe = document.getElementById('myIframe');
+
+        window.addEventListener('message', function(event) {
+            // IMPORTANT: Verify the origin of the message!
+            // This prevents malicious scripts from other origins from manipulating your iframe.
+            // Replace 'https://your-child-github-page-url.github.io' with the actual URL of your child page
+            if (event.origin !== 'https://your-child-github-page-url.github.io') {
+                console.warn('Received message from untrusted origin:', event.origin);
+                return;
+            }
+
+            // Check if the message is the one we expect for setting height
+            if (event.data && event.data.type === 'setIframeHeight') {
+                const newHeight = event.data.height;
+                if (newHeight) {
+                    iframe.style.height = newHeight + 'px';
+                    console.log('Iframe height updated to:', newHeight, 'px');
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
